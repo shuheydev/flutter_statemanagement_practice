@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter_statemanagement_practice/schedule.dart';
+import 'package:provider/provider.dart';
 
-_MyChartState chartState;
+class MyChart extends StatelessWidget {
+  var seriesList = MyChart.createData(0.4);
 
-class MyChart extends StatefulWidget {
   @override
-  _MyChartState createState() {
-    chartState = _MyChartState();
-    return chartState;
+  Widget build(BuildContext context) {
+    return Consumer<MySchedule>(
+      builder: (context, schedule, _) => charts.PieChart(
+        createData(schedule.stateManagementTime),
+        animate: false,
+        defaultRenderer: charts.ArcRendererConfig(
+          arcRendererDecorators: [
+            charts.ArcLabelDecorator(
+              labelPosition: charts.ArcLabelPosition.auto,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   static List<charts.Series<_Problem, String>> createData(
@@ -31,25 +44,6 @@ class MyChart extends StatefulWidget {
         labelAccessorFn: (_Problem row, _) => '${row.name}: ${row.time}',
       ),
     ];
-  }
-}
-
-class _MyChartState extends State<MyChart> {
-  var seriesList = MyChart.createData(0.4);
-
-  @override
-  Widget build(BuildContext context) {
-    return charts.PieChart(
-      seriesList,
-      animate: false,
-      defaultRenderer: charts.ArcRendererConfig(
-        arcRendererDecorators: [
-          charts.ArcLabelDecorator(
-            labelPosition: charts.ArcLabelPosition.auto,
-          ),
-        ],
-      ),
-    );
   }
 }
 
